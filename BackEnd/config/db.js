@@ -19,7 +19,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const pool = mysql.createPool({
+const mySqlDB = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -37,4 +37,4 @@ try {
   console.error("❌ Database Error:", error.message);
 }
 
-export default pool;
+export default mySqlDB;
