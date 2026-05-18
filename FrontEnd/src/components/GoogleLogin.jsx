@@ -1,5 +1,5 @@
 import React, { use } from "react";
-import { Button } from "./ui/Button";
+import { Button } from "./ui/button";
 import { FcGoogle } from "react-icons/fc";
 import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../helpers/firebase.js";
