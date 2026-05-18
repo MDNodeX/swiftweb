@@ -58,6 +58,10 @@ app.use("/backend/comment", CommentRoute);
 app.use("/backend/blog-like", LikeRoute);
 app.use("/backend/contact", ContactRoute);
 
+app.get("/", (req, res) => {
+  res.send("Backend running");
+});
+
 // Ensure the database exists before attempting a pooled connection
 try {
   const initConn = await (await import("mysql2/promise")).createConnection({
