@@ -3,6 +3,9 @@ dotenv.config();
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 // import nodemailer from "nodemailer";
 import { mySqlDB } from "./config/db.js";
 import AuthRoute from "./routes/Auth.route.js";
@@ -12,6 +15,9 @@ import BlogRoute from "./routes/Blog.route.js";
 import CommentRoute from "./routes/Comment.route.js";
 import LikeRoute from "./routes/Like.route.js";
 import ContactRoute from "./routes/Contact.route.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT || 3000;
 
@@ -72,8 +78,29 @@ try {
 
 await mySqlDB
   .query("SELECT 1")
-  .then(() => {
+  .then(async () => {
     console.log("Database connected successfully");
+
+    // Run schema initialisation — creates tables if they don't exist yet
+    try {
+      const sqlPath = path.join(__dirname, "database", "init.sql");
+      const sql = fs.readFileSync(sqlPath, "utf8");
+
+      // Split on statement boundaries (semicolons) and execute each one
+      const statements = sql
+        .split(";")
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0 && !s.startsWith("--"));
+
+      for (const statement of statements) {
+        await mySqlDB.query(statement);
+      }
+      console.log("Database schema initialised successfully");
+    } catch (error) {
+      console.error("Failed to initialise database schema:", error);
+      process.exit(1);
+    }
+
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
