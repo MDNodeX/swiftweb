@@ -80,7 +80,6 @@ export const Login = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      user: newUser,
       message: "Login successful",
       user: {
         id: user.id,
@@ -123,8 +122,6 @@ export const GoolgleLogin = async (req, res, next) => {
         role: null,
         is_verified: 0,
       };
-
-      user = await newUser.save();
     } else {
       user = rows[0];
     }
