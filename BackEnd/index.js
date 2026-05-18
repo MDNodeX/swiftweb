@@ -24,13 +24,21 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 app.use(express.json());
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://swiftweb-9i1d1t3j9-anarul-islam-s-projects.vercel.app",
+];
+
 app.use(
-  // cors({
-  //   origin: process.env.FRONTEND_URL,
-  //   credentials: true,
-  // }),
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   }),
 );
