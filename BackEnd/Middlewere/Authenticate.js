@@ -2,7 +2,9 @@ import jwt from "jsonwebtoken";
 
 export const Authenticate = (req, res, next) => {
   try {
-    const token = req.cookies.access_token;
+    const token =
+      req.cookies.access_token ||
+      req.headers.authorization?.split(" ")[1];
 
     if (!token) {
       return res
@@ -14,9 +16,9 @@ export const Authenticate = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    console.log("Auth error:", error.message);
-    res
-      .status(401)
-      .json({ success: false, message: "Invalid or expired token" });
+    return res.status(401).json({
+      success: false,
+      message: "Invalid or expired token",
+    });
   }
 };
